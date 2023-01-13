@@ -1,0 +1,24 @@
+#####
+# Stellent index Rewrites
+#####
+RewriteRule ^/(.*)/index.htm$ $1.html [R=302]
+RewriteRule ^/(.*).htm$ $1.html [R=302]
+RewriteRule ^/index.aspx$ / [R=302]
+
+#####
+# Staffweb Rewrites
+#####
+RewriteRule ^/news-events/cru17/cru17-survey-report.pdf /content/dam/staffweb/Text/Shared-LH-Comm-Web/2017/09/cru17-survey-report.pdf [R=301,L]
+RewriteRule ^/pay-benefits-staff-expenses/benefits/retirement/403b-automatic-enrollment-notice.pdf /content/dam/staffweb/Text/Shared-LH-SS/2016/11/CMS1_032342.pdf [R=301,L]
+RewriteRule ^/staff-ministry-card/Mobile_Alerts.pdf /content/dam/staffweb/Text/Shared-LH-FSG/2016/11/CMS1_087395.pdf [R=301,L]
+RewriteRule ^/operations/branding-style.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/logos.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/fonts.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/fonts/typography-download.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates/wallpapers.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates/shirts-embroidery.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates/banners-posters.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates/prayer-letter-templates.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/templates/mailchimp-templates.html https://www.cru.org/brand/ [L,R=301]
+RewriteRule ^/operations/branding-style/styleguide.html https://www.cru.org/brand/ [L,R=301]

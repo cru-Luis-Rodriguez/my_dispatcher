@@ -1,0 +1,102 @@
+#####
+# Give Rewrites
+#####
+# Redirect an Indigitous page on the Give Site
+RewriteRule ^/give/us/en/designations/1/1/0/8/0/1108025 /give/us/en/indigitous-serve.html [L,R=301]
+
+#####
+# EasyCheckout v2
+#####
+RewriteRule ^/give/EasyCheckout(.*)$ %{HTTP:X-Forwarded-Proto}://givebr-stage.cru.org/give/EasyCheckout$1 [L,R=307,QSA]
+
+#####
+# Designation Rewrites v2
+#####
+RewriteCond %{REQUEST_URI} ^/([0-9]{7})$
+RewriteRule ^/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9]{2})$ /content/give/us/en/designations/$1/$2/$3/$4/$5/$1$2$3$4$5$6.html [L,PT]
+RewriteCond %{REQUEST_URI} ^/give/([0-9]{7})$
+RewriteRule ^/give/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9]{2})$ /content/give/us/en/designations/$1/$2/$3/$4/$5/$1$2$3$4$5$6.html [L,PT]
+
+#####
+# Campaigns Rewrite v2
+#####
+RewriteCond %{REQUEST_URI} ^/([0-9]{7})_([0-9]+)$
+RewriteRule ^/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9]{2})_([0-9]+)$ /content/give/us/en/campaigns/$1/$2/$3/$4/$5/$1$2$3$4$5$6/$7.html [L,PT]
+RewriteCond %{REQUEST_URI} ^/give/([0-9]{7})_([0-9]+)$
+RewriteRule ^/give/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9]{2})_([0-9]+)$ /content/give/us/en/campaigns/$1/$2/$3/$4/$5/$1$2$3$4$5$6/$7.html [L,PT]
+
+#####
+# Legacy Query Rewrites
+#####
+#Pattern 1 query includes amount and campaign code
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&CampaignCode=%2 [L,R=301,NC]
+
+#Pattern 2 query includes amount, frequency and campaign code
+RewriteCond %{QUERY_STRING} Frequency=M
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=MON&CampaignCode=%3 [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=Q
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=QUARTERLY&CampaignCode=%3 [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=A
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=ANNUAL&CampaignCode=%3 [L,R=301,NC]
+
+#Pattern 3 query includes amount and frequency
+RewriteCond %{QUERY_STRING} Frequency=M
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=MON [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=Q
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=QUARTERLY [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=A
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=ANNUAL [L,R=301,NC]
+
+#Pattern 4 query includes only amount
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)$
+RewriteRule ^/give/GiftDetail/process/instantGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1 [L,R=301,NC]
+
+#####
+# Legacy View Rewrites
+#####
+#This rewrite handles give-site legacy request with a view string. It modifies old parameters to match new parameters
+#Pattern 1 query includes account and campaign code
+RewriteCond %{QUERY_STRING} ^CampaignCode=([a-zA-Z0-9]*)
+RewriteRule ^/give/View/process/newGift/([0-9]{7}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&CampaignCode=%1 [L,R=301,NC]
+#Pattern 2 query includes with only account number
+RewriteRule ^/give/View/process/newGift/([0-9]{7})$ %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1 [L,R=301,NC]
+
+#####
+# Legacy Vanity Rewrites
+#####
+#This rewrite handles give-site legacy vanity URL request with a view string. It modifies old parameters to match new parameters
+#Pattern 1 query includes amount and campaign code
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&CampaignCode=%2 [L,R=301,NC]
+#Pattern 2 query includes amount, frequency and campaign code
+RewriteCond %{QUERY_STRING} Frequency=M
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=MON&CampaignCode=%3 [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=Q
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=QUARTERLY&CampaignCode=%3 [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=A
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)&CampaignCode=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=ANNUAL&CampaignCode=%3 [L,R=301,NC]
+#Pattern 3 query includes amount and frequency
+RewriteCond %{QUERY_STRING} Frequency=M
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=MON [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=Q
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=QUARTERLY [L,R=301,NC]
+RewriteCond %{QUERY_STRING} Frequency=A
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)&Frequency=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1&f=ANNUAL [L,R=301,NC]
+#Pattern 4 query includes only amount
+RewriteCond %{QUERY_STRING} ^Amount=([a-zA-Z0-9]*)$
+RewriteRule ^/give/([a-zA-Z0-9]{6}) %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1?modal=give-gift&d=$1&$=%1 [L,R=301,NC]
+#Pattern 5 query includes with only account number
+RewriteRule ^/give/([a-zA-Z0-9]{6})$ %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1 [L,R=301,NC]

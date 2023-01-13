@@ -1,0 +1,60 @@
+#
+# This file contains the filter ACL, and can be customized.
+#
+# By default, it includes the default filter ACL.
+#
+
+$include "./default_filters.any"
+
+# Allow components JSON model
+/0101 { /type "allow" /extension "json" /selectors "model" /path "/content/*" }
+
+# Allow manifest.webmanifest files located in the content
+/0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
+
+# cru custom filters
+/0039 { /type "allow" /url "/staffweb*" }
+/0091 { /type "allow" /method "GET" /url "/content/experience-fragments/*.infinity.json*" }
+/0092 { /type "allow" /method "GET" /url "/content/experience-fragments/*.json*" }
+/0093 { /type "allow" /method "GET" /url "/content/give/us/en/designations/*/*.infinity.json*" }
+/0094 { /type "allow" /method "GET" /url "/content/give/us/en/campaigns/*/*.infinity.json*" }
+/0096 { /type "allow" /method "GET" /url "/content/give/us/en/campaigns/*/*.infinity.json*" }
+/0097 { /type "allow" /method "GET" /url "/content/jf/us/*/*.infinity.json*" }
+/5003 { /type "allow" /url "GET /libs/cq/i18n/dict.en.json*" }
+/6002 { /type "allow" /url "GET *.social.*.json*" }
+/6003 { /type "allow" /url "GET /services/social/templates*" }
+/6004 { /type "allow" /url "GET /services/social/getLoggedInUser*" }
+/6006 { /type "allow" /url "GET /etc/clientlibs/social/thirdparty/ckeditor/*.js?t=*" }
+/6007 { /type "allow" /url "GET /etc/clientlibs/social/thirdparty/ckeditor/*.css?t=*" }
+/6008 { /type "allow" /url "GET /etc/social/config/*.social.json*" }
+/7001 { /type "allow" /url "GET /libs/cq/security/userinfo.json?cq_ck=*" }
+/7002 { /type "allow" /url "GET /libs/cq/security/currentuser.json?props=preferences/language&cq_ck=*" }
+/7003 { /type "allow" /url "GET /bin/cru/*" }
+/7004 { /type "allow" /url "POST /bin/cru/*" }
+/7005 { /type "allow" /url "GET /services/tagfilter*" }
+/7006 { /type "allow" /url "POST /content/cru-communities/colleges/*/en/*/jcr =>content/content/primary/communitygroups.social.json" }
+/7007 { /type "allow" /url "GET /content/cru-communities/colleges/*/en/*/jcr =>content/content/primary/communitygroups.social.json" }
+/7008 { /type "allow" /url "GET /bin/cas/*" }
+/7009 { /type "allow" /url "POST /bin/cas/*" }
+/7010 { /type "allow" /url "GET /bin/jf/*" }
+/7011 { /type "allow" /url "GET /bin/querybuilder.json?*" }
+/7012 { /type "allow" /url "POST /bin/crugive/*" }
+/7013 { /type "allow" /url "GET /bin/crugive/*" }
+/7014 { /type "allow" /url "HEAD /bin/crugive/*" }
+/7015 { /type "allow" /url "GET /bin/staffweb/*" }
+/7016 { /type "allow" /url "POST /bin/staffweb/*" }
+/7017 { /type "allow" /url "POST /content/usergenerated/asi/mongo/*" }
+/7018 { /type "allow" /url "GET /content/usergenerated/asi/mongo/*" }
+/7019 { /type "allow" /url "GET /bin/leaderimpact/*" }
+/7020 { /type "allow" /url "POST /bin/leaderimpact/*" }
+/7021 { /type "allow" /url "GET /bin/leaderhub/*" }
+/7022 { /type "allow" /url "POST /bin/leaderhub/*" }
+/7024 { /type "allow" /path "/home/users*" /selectors '(infinity|tidy)' /extension '(json)' }
+/7025 { /type "deny" /path "/home/users/i/imum9QHYpiQAZq-Zrq4A*" /selectors '(infinity|tidy)' /extension '(json)' }
+/7026 { /type "allow" /path "/etc/cloudsettings/asset-share-commons/contexthub*" /selectors '(kernel)' /extension '(js)' }
+/7027 { /type "allow" /path "/content/staffweb/us/en*" /selectors '(orderhistory|smartlists|)' /extension '(json)' }
+/7028 { /type "allow" /path "/etc/segmentation/contexthub*" /selectors '(segment)' /extension '(js)' }
+/7029 { /type "deny" /method "GET" /url "/bin/querybuilder.feed.*" }
+/7030 { /type "deny" /method "GET" /url "/bin/wcm/*/gql.json*" }
+/7031 { /type "deny" /method "GET" /url "/system/sling/loginstatus.*" }
+/7032 { /type "deny" /method "GET" /url "/system/sling/loginstatus.js" }

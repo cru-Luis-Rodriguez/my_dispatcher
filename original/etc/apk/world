@@ -1,0 +1,15 @@
+alpine-baselayout
+alpine-keys
+apache2
+apache2-proxy
+apache2-ssl
+apache2-utils
+apk-tools
+bash
+busybox
+curl
+ed
+inotify-tools
+libc-utils
+libxml2
+unzip

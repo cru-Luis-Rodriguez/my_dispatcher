@@ -1,0 +1,122 @@
+#####
+# Geo Location rewrites based on CloudFront CloudFront-Viewer-Country header
+#####
+# Rewrite Map for the Language to Node map. The 'txt:' indicates that this is a text
+# based rewrite map. The path afterwards is the path to the map file.
+#Rewrite for path ending in / excluding other aem root paths.
+  RewriteMap languagemap_us "txt:conf.d/variables/mpc/language-based-dispatcher/cru-us-language-based-map.txt"
+  RewriteMap languagemap_lac "txt:conf.d/variables/mpc/language-based-dispatcher/cru-lac-language-based-map.txt"
+  RewriteMap languagemap_ar "txt:conf.d/variables/mpc/language-based-dispatcher/cru-ar-language-based-map.txt"
+  RewriteMap languagemap_mx "txt:conf.d/variables/mpc/language-based-dispatcher/cru-mx-language-based-map.txt"
+  RewriteMap languagemap_co "txt:conf.d/variables/mpc/language-based-dispatcher/cru-co-language-based-map.txt"
+  RewriteMap languagemap_gt "txt:conf.d/variables/mpc/language-based-dispatcher/cru-gt-language-based-map.txt"
+  RewriteMap languagemap_sv "txt:conf.d/variables/mpc/language-based-dispatcher/cru-sv-language-based-map.txt"
+  RewriteMap languagemap_cl "txt:conf.d/variables/mpc/language-based-dispatcher/cru-cl-language-based-map.txt"
+
+  #Blocked Countries
+  #SetEnvIf CloudFront-Viewer-Country CN BlockCountry
+  #SetEnvIf CloudFront-Viewer-Country RU BlockCountry
+  #Deny from env=BlockCountry
+
+  #Redirects landing page based on country
+  #Spanish Speaking Countries aka (LAC)
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^(PR|SR|BB|CR|BS|BZ|CW|DO|GD|GF|GP|GS|GY|BR|HN|HT|KN|KY|LC|MF|MQ|MS|NI|PE|PY|SX|UY|VC|VE|VG|VI|BA|BO)$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /content/cru/lac/${languagemap_lac:%1|es}.html [PT]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Guatemala
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^GT$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /gt/${languagemap_gt:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country El Salvador
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^SV$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /sv/${languagemap_sv:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Chile
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^CL$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /cl/${languagemap_cl:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Argentina
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^AR$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /ar/${languagemap_ar:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Mexico
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^MX$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /mx/${languagemap_mx:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Colombia
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^CO$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /co/${languagemap_co:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Ecuador
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^EC$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /ec/${languagemap_lac:%1|es}.html [R=302,NC,L]
+
+  #Redirects landing page based on country
+  #Spanish Speaking Country Panama
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^PA$
+  RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  RewriteRule ^/$ /pa/${languagemap_lac:%1|es}.html [R=302,NC,L]
+
+  #English Speaking Countries
+  #RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^US$
+  #RewriteCond %{HTTP:Accept-Language} ^(..).*$ [NC]
+  #RewriteRule ^/$ /content/cru/${lower:%{HTTP:CLOUDFRONT-VIEWER-COUNTRY}}/${languagemap_us:%1|en}.html [PT]
+
+  #Not Identified
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^(A1|A2|O1)$
+  RewriteRule ^/$ /content/cru/us/en.html [PT]
+
+  #Default
+  RewriteCond %{HTTP:CLOUDFRONT-VIEWER-COUNTRY} ^(..).*$
+  RewriteRule ^/$ /content/cru/us/en.html [PT]
+
+#####
+# Rewrite for anything that comes after the slash, excluding other aem root paths.
+#####
+#rewrite for anything that comes after the slash, excluding other aem root paths.
+  # 301 REDIRECT FORCE (https) -- legacy request (us/en) hiding country/language
+  RewriteCond %{REQUEST_URI} !^/(bin|apps|etc|home|libs|tmp|var|css|data|picture|images|font|scripts) [NC]
+  RewriteCond %{REQUEST_URI} !^/winter/scripts [NC]
+  RewriteCond %{REQUEST_URI} !^/html/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/(sg|ph|br|pa|tw)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/(ar|mx|co|ec)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/(lac|lac/es|car|car/en) [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/icon.png$ [NC]
+  RewriteCond %{REQUEST_URI} !^/favicon.ico$ [NC]
+  RewriteCond %{REQUEST_URI} !^/robots.txt$ [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/services/*/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/content [NC]
+  RewriteCond %{REQUEST_URI} !^/content/dam [NC]
+  RewriteCond %{REQUEST_URI} !^/([a-z]{2})/([a-z]{2}) [NC]
+  RewriteRule ^/(.*)$ https://%{HTTP_HOST}/us/en/$1 [R=301,QSA]
+
+  #map Default -- request expose country/language
+  RewriteCond %{REQUEST_URI} !^/(bin|apps|etc|home|libs|tmp|var|css|data|picture|images|font|scripts) [NC]
+  RewriteCond %{REQUEST_URI} !^/html/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/winter/scripts [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/icon.png$ [NC]
+  RewriteCond %{REQUEST_URI} !^/favicon.ico$ [NC]
+  RewriteCond %{REQUEST_URI} !^/robots.txt$ [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/services/*/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/content [NC]
+  RewriteCond %{REQUEST_URI} !^/content/dam [NC]
+  RewriteRule ^/(.*)$ /content/cru/$1 [PT,L]

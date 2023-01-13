@@ -1,0 +1,51 @@
+#####
+# Block Scanners
+#####
+RewriteCond %{REQUEST_URI} !^/etc.clientlibs/clientlibs/social/thirdparty/ckeditor.min.js
+RewriteCond %{REQUEST_URI} ^.*((admin\/.*)|(fckeditor.*)|(ckeditor.*)|(WebAdmin\/.*)|(kcfinder\/.*)|(autodiscover\/.*)|(wp-cron.*)|(wp-login.*)) [OR]
+RewriteCond %{REQUEST_URI} ^.*(\.php(.*)|php-(.*)|php.cgi(.*)|nphp(.*)) [OR]
+RewriteCond %{REQUEST_URI} ^.*((\.asmx.*)|(\.asp(.*))) [OR]
+RewriteCond %{REQUEST_URI} ^.*(dump.rar|dump.zip|dump.tgz|dump.tar(.*)|-dump|dumper|dump\/) [OR]
+RewriteCond %{REQUEST_URI} ^.*/AutoDiscover/autodiscover.xml
+RewriteRule .* - [R=404,L,NC]
+
+#####
+# xforwardpath rule
+#####
+# Determine if request scheme is either http or https
+RewriteCond %{HTTPS} off
+RewriteRule .* - [E=MY_REQUEST_SCHEME:http]
+RewriteCond %{HTTPS} on
+RewriteRule .* - [E=MY_REQUEST_SCHEME:https]
+# Then you can use as %{ENV:MY_REQUEST_SCHEME}
+# all  urls set env vars FIRST, needed for relay pluggin
+RewriteRule (.*) - [QSA,E=FIRST:%{ENV:MY_REQUEST_SCHEME}://%{HTTP_HOST}:%{SERVER_PORT}%{REQUEST_URI}?%{QUERY_STRING}]
+# if env var FIRST is set then create header First: $ENV{FIRST}
+RequestHeader set X-Forwarded-Path %{FIRST}e env=FIRST
+
+#####
+# Set url to lowercase
+#####
+RewriteCond %{REQUEST_URI}  !^/bin/(.*)$
+RewriteCond %{REQUEST_URI}  !^/content/cru/us/en/search(.*)$
+RewriteCond %{REQUEST_URI}  !^/services/social/getLoggedInUser.html(.*)$
+RewriteCond %{REQUEST_URI}  !^/etc/social/config(.*)$
+RewriteCond %{REQUEST_URI}  !^/(.*)(\.entry.html|\.event.html)/(.*)$
+RewriteCond %{REQUEST_URI}  ^/.*(\.html)$
+RewriteCond ${lower:%{REQUEST_URI}} -U
+RewriteRule [A-Z] ${lower:%{REQUEST_URI}} [R=302]
+
+#####
+# Remove traling slash
+#####
+RewriteCond %{REQUEST_URI} /$
+RewriteRule ^(.+)/$ $1.html [L,R=301]
+RewriteCond %{REQUEST_URI} !(\.[a-zA-Z1-9]+)$
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule !.*\.html$ %{REQUEST_URI}.html [L,R=301]
+
+#####
+# Rewrite request ending with .htm
+#####
+RewriteCond %{REQUEST_URI} !^(.*)/index.htm
+RewriteRule ^(.*).htm$ $1.html

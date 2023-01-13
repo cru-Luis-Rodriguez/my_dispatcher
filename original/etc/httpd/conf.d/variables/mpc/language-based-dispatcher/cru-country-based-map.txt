@@ -1,0 +1,9 @@
+#
+# country Mapping for Browser Language to AEM country node
+#
+# Key: language code of the CloudFront Country Code of the supported browsers
+# Value: node name of the country inside AEM
+#
+
+US us
+AR ar

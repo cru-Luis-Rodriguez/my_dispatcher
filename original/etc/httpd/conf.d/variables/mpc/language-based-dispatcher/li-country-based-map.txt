@@ -1,0 +1,10 @@
+#
+# country Mapping for Browser Language to AEM country node
+#
+# Key: language code of the Accept Language of the supported browsers
+# Value: node name of the country inside AEM
+#
+fr ca
+es us
+ar ar
+en us

@@ -1,0 +1,201 @@
+# Include customer defined variables
+Include conf.d/variables/custom.vars
+<VirtualHost *:80>
+  ServerName stage.cru.org
+  ServerAlias stage.cru.org cdn-stage.cru.org cdn1-stage.cru.org cdn2-stage.cru.org
+  DocumentRoot ${DOCROOT}
+  AllowEncodedSlashes NoDecode
+  RewriteEngine On
+  ExpiresActive On
+  TraceEnable Off
+  RewriteMap lower int:tolower
+
+  # Prevent clickjacking
+  Header always append X-Frame-Options SAMEORIGIN
+
+  # Add header breadcrumbs for help in troubleshooting
+  <IfModule mod_headers.c>
+    Header add X-Vhost "cru"
+  </IfModule>
+
+  <IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+
+    <IfModule mod_include.c>
+      AddType text/html .html
+      AddOutputFilter INCLUDES .html
+      Options +Includes
+    </IfModule>
+
+    <IfModule mod_setenvif.c>
+      # Netscape 4.x has some problems
+      BrowserMatch ^Mozilla/4 gzip-only-text/html
+      # Netscape 4.06-4.08 have some more problems
+      BrowserMatch ^Mozilla/4\.0[678] no-gzip
+      # MSIE masquerades as Netscape, but it is fine
+      BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+      # Don't compress already-compressed files
+      SetEnvIfNoCase Request_URI .(?:gif|jpe?g|png)$ no-gzip dont-vary
+      SetEnvIfNoCase Request_URI .(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+      SetEnvIfNoCase Request_URI .(?:avi|mov|mp3|mp4|rm|flv|swf|mp?g)$ no-gzip dont-vary
+      SetEnvIfNoCase Request_URI .pdf$ no-gzip dont-vary
+  </IfModule>
+</IfModule>
+
+  <IfModule mod_headers.c>
+    Header unset ETag
+  </IfModule>
+
+  FileETag None
+  <filesMatch "\.(html|htm)$">
+    <ifModule mod_headers.c>
+      Header set X-UA-Compatible "IE=9; IE=8; IE=7; IE=EDGE"
+    </ifModule>
+  </filesMatch>
+
+  <Directory />
+    <IfModule disp_apache2.c>
+      SetHandler dispatcher-handler
+      ModMimeUsePathInfo On
+      DirectorySlash Off
+    </IfModule>
+
+    Options FollowSymLinks Includes
+    AllowOverride None
+  </Directory>
+
+  <Directory "${DOCROOT}>
+    Options Indexes FollowSymLinks Includes
+    AllowOverride None
+    Require all granted
+  </Directory>
+
+  <IfModule disp_apache2.c>
+    # Enabled to allow rewrites to take affect and not be ignored by the dispatcher module
+    DispatcherUseProcessedURL	On
+    # Default setting to allow all errors to come from the aem instance
+    DispatcherPassError		0
+  </IfModule>
+
+  <LocationMatch "\.(?i:pdf)$">
+    ForceType application/pdf
+    Header set Content-Disposition inline
+  </LocationMatch>
+
+  # Rewrite index page internally, pass through (PT)
+    RewriteRule "^(/?)$" "/index.html" [PT]
+
+  <Location /fonts>
+    ExpiresByType font/truetype "access plus 1 week"
+    ExpiresByType font/opentype "access plus 1 week"
+    ExpiresByType application/x-font-woff "access plus 1 week"
+    ExpiresByType image/svg+xml "access plus 1 week"
+    ExpiresByType image/svg+xml "access plus 1 day"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 week"
+  </Location>
+
+  # Set up short caching on media files, mod_pagespeed will reset to max-age=31536000
+  <LocationMatch ".+\.(flv|pdf|avi|mov|ppt|doc|mp3|wmv|wav|mp4)$">
+  ExpiresDefault "access plus 1 week"
+  Header append Cache-Control "public"
+  </LocationMatch>
+
+  <LocationMatch ".+\.(html)$">
+  ExpiresByType text/html "access plus 10 minutes"
+  Header append Cache-Control "private"
+  </LocationMatch>
+
+
+  # Set up short caching on media files, mod_pagespeed will reset to max-age=31536000
+  <LocationMatch ".+\.(ico|jpe?g|JPG|png|gif|swf)$">
+  Header set Cache-Control "max-age=300, public"
+  </LocationMatch>
+
+  # Set up short caching on commonly updated files, mod_pagespeed will reset to max-age=31536000
+  <LocationMatch ".+\.(xml|txt|js|css)$">
+  Header set Cache-Control "max-age=300, public"
+  </LocationMatch>
+
+  <LocationMatch ".+\.(ttf|otf|eot|woff|woff2)$">
+  SetEnvIf Origin ^(https?://(?:.+\.)?cru\.org(?::\d{1,5})?)$ CORS_ALLOW_ORIGIN=$1
+  Header append Access-Control-Allow-Origin %{CORS_ALLOW_ORIGIN}e env=CORS_ALLOW_ORIGIN
+  Header merge Vary "Origin"
+  Header set Cache-Control "max-age=604800, public"
+  </LocationMatch>
+
+# Adobe recommended CDN cache headers.
+  # Theme Sources via Clientlib: cache mutable resources for 24h on CDN and background refresh to avoid MISS
+  <LocationMatch "^/etc\.clientlibs/.*\.(?i:json|png|gif|jpe?g|svg)$">
+   Header set Cache-Control "max-age=7200,s-maxage=86400,stale-while-revalidate=43200,stale-if-error=43200,public"
+  </LocationMatch>
+  # Theme Sources via Clientlib: long-term caching (30 days) for immutable URLs, background refresh to avoid MISS
+  <LocationMatch "^/etc\.clientlibs/.*\.(?i:js|css|ttf|woff2)$">
+   Header set Cache-Control "max-age=2592000,stale-while-revalidate=43200,stale-if-error=43200,public,immutable"
+  </LocationMatch>
+  # Core Component Image Component: long-term caching (30 days) for immutable URLs, background refresh to avoid MISS
+  <LocationMatch "\.coreimg\..*\.(?i:jpe?g|png|gif|svg)$">
+   Header set Cache-Control "max-age=2592000,stale-while-revalidate=43200,stale-if-error=43200,public,immutable"
+  </LocationMatch>
+  # HTML pages: CDN cache for 10min with background refresh to avoid MISS, also incl. html requests with query parameter
+  <LocationMatch "\.html$">
+   Header unset Cache-Control
+   Header always set Cache-Control "max-age=120,s-maxage=600,stale-while-revalidate=43200,stale-if-error=43200"
+  </LocationMatch>
+  # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS
+  <LocationMatch "^/content/dam/.*\.(?i:jpe?g|gif|ico|mov|png|svg)$">
+   Header set Cache-Control "max-age=7200,s-maxage=86400,stale-while-revalidate=43200,stale-if-error=43200"
+  </LocationMatch>
+
+# Rewrites:
+#Include conf.d/rewrites/rewrite.rules
+Include conf.d/rewrites/cru_rewrites.rules
+Include conf.d/rewrites/standard.rules
+#Include conf.d/rewrites/cru_geo.rules
+
+#####
+# redirects robots.txt to a stage specific file
+#####
+RewriteRule ^/robots.txt /stage_robots.txt [PT,L]
+
+# rewrite for root redirect
+RewriteRule ^/$ /content/cru/us/en.html [PT]
+
+
+#####
+# Rewrite for anything that comes after the slash, excluding other aem root paths.
+#####
+#rewrite for anything that comes after the slash, excluding other aem root paths.
+  # 301 REDIRECT FORCE (https) -- legacy request (us/en) hiding country/language
+  RewriteCond %{REQUEST_URI} !^/(bin|apps|etc|home|libs|tmp|var|css|data|picture|images|font|scripts) [NC]
+  RewriteCond %{REQUEST_URI} !^/winter/scripts [NC]
+  RewriteCond %{REQUEST_URI} !^/html/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/(sg|ph|br|pa|tw)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/(ar|mx|co|ec)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/(lac|lac/es|car|car/en) [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/icon.png$ [NC]
+  RewriteCond %{REQUEST_URI} !^/favicon.ico$ [NC]
+  RewriteCond %{REQUEST_URI} !^/robots.txt$ [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/services/*/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/content [NC]
+  RewriteCond %{REQUEST_URI} !^/content/dam [NC]
+  RewriteCond %{REQUEST_URI} !^/([a-z]{2})/([a-z]{2}) [NC]
+  RewriteRule ^/(.*)$ https://%{HTTP_HOST}/us/en/$1 [R=301,QSA]
+
+  #map Default -- request expose country/language
+  RewriteCond %{REQUEST_URI} !^/(bin|apps|etc|home|libs|tmp|var|css|data|picture|images|font|scripts) [NC]
+  RewriteCond %{REQUEST_URI} !^/html/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/winter/scripts [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/icon.png$ [NC]
+  RewriteCond %{REQUEST_URI} !^/favicon.ico$ [NC]
+  RewriteCond %{REQUEST_URI} !^/robots.txt$ [NC]
+  RewriteCond %{REQUEST_URI} !^/.*(\.svg)$ [NC]
+  RewriteCond %{REQUEST_URI} !^/services/*/(.*) [NC]
+  RewriteCond %{REQUEST_URI} !^/content [NC]
+  RewriteCond %{REQUEST_URI} !^/content/dam [NC]
+  RewriteRule ^/(.*)$ /content/cru/$1 [PT,L]
+
+</VirtualHost>
+

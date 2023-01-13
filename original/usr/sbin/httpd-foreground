@@ -1,0 +1,34 @@
+#!/bin/sh
+set -e
+
+# Apache gets grumpy about PID files pre-existing
+rm -f ${APACHE_RUN_DIR}/httpd.pid
+
+# Pick up any necessary environment variables
+if [ -f /usr/sbin/envvars ]; then
+  . /usr/sbin/envvars
+fi
+
+/usr/sbin/httpd-reload-monitor &
+
+# Pass the environment type as define
+DEFINE_ENV=`echo $ENVIRONMENT_TYPE | tr [:lower:] [:upper:]`
+ARGS="-DFOREGROUND -DENVIRONMENT_${DEFINE_ENV}"
+
+if [ -n "${COMMERCE_ENDPOINT}" ]; then
+  echo "Enabling reverse-proxy for Commerce - COMMERCE_ENDPOINT=${COMMERCE_ENDPOINT}"
+  ARGS="${ARGS} -DCOMMERCE"
+fi
+
+if [ -n "${AEM_HTTP_PROXY_HOST}" ]; then
+  echo "Enabling HTTP egress proxy - AEM_HTTP_PROXY_HOST=${AEM_HTTP_PROXY_HOST}"
+  ARGS="${ARGS} -DHTTP_EGRESS_PROXY"
+fi
+
+if [ -n "${FRONTEND_URI_PREFIX}" ]; then
+  echo "Enabling fronted support"
+  ARGS="${ARGS} -DFRONTEND_SUPPORT"
+fi
+
+echo "Starting httpd server"
+exec httpd -d ${APACHE_PREFIX} -f ${APACHE_PREFIX}/conf/httpd.conf ${ARGS}

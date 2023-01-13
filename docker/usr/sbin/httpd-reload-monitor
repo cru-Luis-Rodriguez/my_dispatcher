@@ -1,0 +1,30 @@
+#!/bin/sh
+set -e
+
+if [ -z "${RELOAD_TRIGGER}" ]; then
+  RELOAD_TRIGGER="reload"
+else
+  echo "Detected reload trigger file name: ${RELOAD_TRIGGER}"
+fi
+
+RELOAD_TRIGGER_FILE="${APACHE_PREFIX}/${RELOAD_TRIGGER}"
+PID_FILE="${APACHE_RUN_DIR}/httpd.pid"
+
+echo "$(date) Monitoring reload trigger file existence at ${RELOAD_TRIGGER_FILE} seconds started"
+
+while inotifywait -e create ${APACHE_PREFIX} --include ${RELOAD_TRIGGER}
+do
+	if [[ -f ${RELOAD_TRIGGER_FILE} ]]
+	then
+		echo "$(date) Reloading httpd config via sending signal to httpd initiated"
+		if [[ -f ${PID_FILE} ]]
+		then
+			echo "$(date) Using httpd PID from ${PID_FILE}"
+			kill -USR1 $(cat ${PID_FILE})
+			echo "$(date) Signal to reload httpd config sent" 
+			rm -f ${RELOAD_TRIGGER_FILE}
+		else
+			echo "$(date) No httpd PID file found at ${PID_FILE}"
+		fi
+    fi
+done

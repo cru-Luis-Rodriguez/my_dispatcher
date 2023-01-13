@@ -1,0 +1,140 @@
+/cru  {
+  /clientheaders
+    {
+      $include "../clientheaders/clientheaders.any"
+    }
+  /virtualhosts
+    {
+      "stage.cru.org"
+      "give-stage.cru.org"
+    }
+  /renders
+    {
+   $include "../renders/default_renders.any"
+    }
+  /filter
+    {
+    $include "../filters/filters.any"
+    }
+  /vanity_urls
+  /cache
+    {
+    /docroot "${DOCROOT}"
+    /statfileslevel "4"
+    /allowAuthorized  "0"
+    /serveStaleOnError "1"
+    /rules
+      {
+        /0000
+          {
+            /glob "*"
+            /type "allow"
+          }
+        /0001
+          {
+            /glob "/libs/granite/security/currentuser.json*"
+            /type "deny"
+          }
+        /0004
+          {
+            /glob "/bin/crugive/*"
+            /type "deny"
+          }
+        /0005
+          {
+            /glob "/libs/granite/dispatcher/content/vanityUrls.html"
+            /type "deny"
+          }
+        /0007
+          {
+            /glob "*.social.json*"
+            /type "deny"
+          }
+        /0008
+          {
+            /glob "/libs/granite/csrf/token.json*"
+            /type "deny"
+          }
+        /0009
+          {
+            /glob "/libs/granite/security/userinfo.json*"
+            /type "deny"
+          }
+        /disable-nocache
+          {
+            /glob "*.nocache.html*"
+            /type "deny"
+          }
+      }
+    /invalidate
+      {
+        /0000
+          {
+            /glob "*"
+            /type "deny"
+          }
+        /0001
+          {
+            /glob "*.html"
+            /type "allow"
+          }
+        /0002
+          {
+            /glob "/etc/segmentation.segment.js"
+            /type "allow"
+          }
+        /0003
+          {
+            /glob "*/analytics.sitecatalyst.js"
+            /type "allow"
+          }
+      }
+    /allowedClients
+      {
+     $include "../cache/default_invalidate.any"
+      }
+    /ignoreUrlParams
+      {
+        /0001
+          {
+            /glob "*"
+            /type "deny"
+          }
+        /0002
+          {
+            /glob "ticket="
+            /type "deny"
+          }
+      }
+    /headers
+      {
+      "Content-Disposition"
+      "Content-Type"
+      "Content-Length"
+      }
+    #Configuring Time Based Cache Invalidation
+    /enableTTL "1"
+    }
+  /statistics
+    {
+      /categories
+        {
+        /html
+          {
+            /glob "*.html"
+          }
+        /others
+          {
+            /glob "*"
+          }
+        }
+    }
+
+}
+
+
+
+
+
+
+

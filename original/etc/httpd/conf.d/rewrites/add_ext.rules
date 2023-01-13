@@ -1,0 +1,29 @@
+#####
+# Add extension if missing Rewrite
+#####
+# Handle request with no slash and no extension
+RewriteCond %{REQUEST_URI} !^/([0-9]{7})$
+RewriteCond %{REQUEST_URI} !^/give/([0-9]{7})$
+RewriteCond %{REQUEST_URI} !^/([0-9]{7})_([0-9]+)$
+RewriteCond %{REQUEST_URI} !^/give/([0-9]{7})_([0-9]+)$
+RewriteCond %{REQUEST_URI} !^/give/([a-zA-Z0-9]{6})$
+RewriteCond %{REQUEST_URI} !^/([a-zA-Z0-9]{6})$
+RewriteCond %{REQUEST_URI} !^/.*(\.html)$
+RewriteCond %{REQUEST_URI} !^/content/dam/.*
+RewriteCond %{REQUEST_URI} !^/bin/(.*)
+RewriteCond %{REQUEST_URI} !^/.*\..*$
+RewriteCond %{REQUEST_URI} !^/(.*)/$
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule ^/(.*)$ %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1.html [R=301,QSA]
+# Handle requests to pages ending with a trailing slash
+RewriteCond %{REQUEST_URI} !^/([0-9]{7})$
+RewriteCond %{REQUEST_URI} !^/give/([0-9]{7})$
+RewriteCond %{REQUEST_URI} !^/([0-9]{7})_([0-9]+)$
+RewriteCond %{REQUEST_URI} !^/give/([0-9]{7})_([0-9]+)$
+RewriteCond %{REQUEST_URI} !^/give/([a-zA-Z0-9]{6})$
+RewriteCond %{REQUEST_URI} !^/([a-zA-Z0-9]{6})$
+RewriteCond %{REQUEST_URI} !^/bin/(.*)
+RewriteCond %{REQUEST_URI} !^/content/dam
+RewriteCond %{REQUEST_URI} .*/$
+RewriteCond %{REQUEST_URI} !^/$
+RewriteRule (.*)/$ %{HTTP:X-Forwarded-Proto}://%{HTTP_HOST}/$1.html [R=301,QSA]

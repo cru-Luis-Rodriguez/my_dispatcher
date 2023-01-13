@@ -1,0 +1,254 @@
+/staffweb_secure {
+  /clientheaders
+    {
+     "*"
+    }
+  /virtualhosts
+    {
+      "staffweb-stage.cru.org"
+      "staffweb-stage2.cru.org"
+    }
+  /renders
+    {
+      $include "../renders/default_renders.any"
+    }
+  /filter
+    {
+      /0001 { /type "deny" /url "*" }
+      /0002 { /type "allow" /url "/scripts/*.js" }
+      /0022 { /type "allow" /url "/content*" }
+      /0029 { /type "allow" /url "GET /html/*" }
+      /0030 { /type "allow" /url "/images*" }
+      /0031 { /type "allow" /url "/fonts*" }
+      /0032 { /type "allow" /url "/*/images*" }
+      /0033 { /type "allow" /url "/*/styles*" }
+      /0034 { /type "allow" /url "/gsw*" }
+      /0035 { /type "allow" /url "/give*" }
+      /0036 { /type "allow" /url "/jf*" }
+      /0037 { /type "allow" /url "/dev*" }
+      /0038 { /type "allow" /url "/leaderimpact*" }
+      /0039 { /type "allow" /url "/staffweb*" }
+      /0041 { /type "allow" /extension '(clientlibs|css|gif|ico|js|png|swf|jpe?g|woff2?|svg|txt|ttf|mp3)' }
+      /0050 { /type "allow" /url "GET /etc/designs/*" }
+      /0051 { /type "allow" /url "GET /etc/clientlibs/*" }
+      /0052 { /type "allow" /url "GET /bin/statistics/tracker/*" }
+      /0054 { /type "allow" /url "* /home/users/*/*/profile.form.html*" }
+      /0057 { /type "allow" /url "GET /home/users/*/profile/*" }
+      /0058 { /type "allow" /url "GET /libs/cq/personalization/components/clickstreamcloud/content/config.json*" }
+      /0059 { /type "allow" /url "GET /etc/clientcontext/*" }
+      /0060 { /type "allow" /url "GET /etc/segmentation.segment.js*" }
+      /0061 { /type "allow" /url "POST /content/[.]*.form.html" }
+      /0062 { /type "allow" /url "/libs/cq/personalization/*" }
+      /0063 { /type "allow" /url "GET /system/sling/logout*" }
+      /0064 { /type "allow" /url "GET /etc/cloudservices/*" }
+      /0065 { /type "allow" /url "GET /libs/wcm/stats/tracker.js*" }
+      /0066 { /type "allow" /url "GET /libs/cq/security/userinfo.json*" }
+      /0067 { /type "allow" /url "GET /libs/cq/i18n/*" }
+      /0081 { /type "deny" /selectors '((sys|doc)view|query|[0-9-]+)' /extension '(json|xml)' }
+      /0082 { /type "deny" /path "/content*" /selectors '(feed|rss|pages|languages|blueprint|infinity|tidy)' /extension '(json|xml|html)' }
+      /0083 { /type "deny" /extension '(php|asp)' }
+      /0090 { /type "deny" /url "*.query.json*" }
+      /0091 { /type "allow" /method "GET" /url "/content/experience-fragments/*.infinity.json*" }
+      /0092 { /type "allow" /method "GET" /url "/content/experience-fragments/*.json*" }
+      /0093 { /type "allow" /method "GET" /url "/content/give/us/en/designations/*/*.infinity.json*" }
+      /0094 { /type "allow" /method "GET" /url "/content/give/us/en/campaigns/*/*.infinity.json*" }
+      /0096 { /type "allow" /method "GET" /url "/content/give/us/en/campaigns/*/*.infinity.json*" }
+      /0097 { /type "allow" /method "GET" /url "/content/jf/us/*/*.infinity.json*" }
+      /0098 { /type "allow" /url "URL /etc.clientlibs/*" }
+      /0100 { /type "allow" /url "/libs/granite/dispatcher/content/vanityUrls.html" }
+      /0170 { /type "allow" /url "GET /libs/granite/csrf/token.json*" }
+      /0171 { /type "allow" /url "POST /content/sites/*/resource/en/*" }
+      /0172 { /type "allow" /url "GET /content/communities/enablement/reports/*" }
+      /0173 { /type "allow" /url "GET /content/sites/*" }
+      /0174 { /type "allow" /url "GET /content/communities/scorm/*" }
+      /0176 { /type "allow" /url "GET /libs/granite/security/userinfo.json" }
+      /0177 { /type "allow" /url "GET /libs/granite/security/currentuser.json*" }
+      /5003 { /type "allow" /url "GET /libs/cq/i18n/dict.en.json*" }
+      /6002 { /type "allow" /url "GET *.social.*.json*" }
+      /6003 { /type "allow" /url "GET /services/social/templates*" }
+      /6004 { /type "allow" /url "GET /services/social/getLoggedInUser*" }
+      /6006 { /type "allow" /url "GET /etc/clientlibs/social/thirdparty/ckeditor/*.js?t=*" }
+      /6007 { /type "allow" /url "GET /etc/clientlibs/social/thirdparty/ckeditor/*.css?t=*" }
+      /6008 { /type "allow" /url "GET /etc/social/config/*.social.json*" }
+      /7001 { /type "allow" /url "GET /libs/cq/security/userinfo.json?cq_ck=*" }
+      /7002 { /type "allow" /url "GET /libs/cq/security/currentuser.json?props=preferences/language&cq_ck=*" }
+      /7003 { /type "allow" /url "GET /bin/cru/*" }
+      /7004 { /type "allow" /url "POST /bin/cru/*" }
+      /7005 { /type "allow" /url "GET /services/tagfilter*" }
+      /7006 { /type "allow" /url "POST /content/cru-communities/colleges/*/en/*/jcr =>content/content/primary/communitygroups.social.json" }
+      /7007 { /type "allow" /url "GET /content/cru-communities/colleges/*/en/*/jcr =>content/content/primary/communitygroups.social.json" }
+      /7008 { /type "allow" /url "GET /bin/cas/*" }
+      /7009 { /type "allow" /url "POST /bin/cas/*" }
+      /7010 { /type "allow" /url "GET /bin/jf/*" }
+      /7011 { /type "allow" /url "GET /bin/querybuilder.json?*" }
+      /7012 { /type "allow" /url "POST /bin/crugive/*" }
+      /7013 { /type "allow" /url "GET /bin/crugive/*" }
+      /7014 { /type "allow" /url "HEAD /bin/crugive/*" }
+      /7015 { /type "allow" /url "GET /bin/staffweb/*" }
+      /7016 { /type "allow" /url "POST /bin/staffweb/*" }
+      /7017 { /type "allow" /url "POST /content/usergenerated/asi/mongo/*" }
+      /7018 { /type "allow" /url "GET /content/usergenerated/asi/mongo/*" }
+      /7019 { /type "allow" /url "GET /bin/leaderimpact/*" }
+      /7020 { /type "allow" /url "POST /bin/leaderimpact/*" }
+      /7021 { /type "allow" /url "GET /bin/leaderhub/*" }
+      /7022 { /type "allow" /url "POST /bin/leaderhub/*" }
+      /7024 { /type "allow" /path "/home/users*" /selectors '(infinity|tidy)' /extension '(json)' }
+      /7025 { /type "deny" /path "/home/users/i/imum9QHYpiQAZq-Zrq4A*" /selectors '(infinity|tidy)' /extension '(json)' }
+      /7026 { /type "allow" /path "/etc/cloudsettings/asset-share-commons/contexthub*" /selectors '(kernel)' /extension '(js)' }
+      /7027 { /type "allow" /path "/content/staffweb/us/en*" /selectors '(orderhistory|smartlists|)' /extension '(json)' }
+      /7028 { /type "allow" /path "/etc/segmentation/contexthub*" /selectors '(segment)' /extension '(js)' }
+      /7029 { /type "deny" /method "GET" /url "/bin/querybuilder.feed.*" }
+      /7030 { /type "deny" /method "GET" /url "/bin/wcm/*/gql.json*" }
+      /7031 { /type "deny" /method "GET" /url "/system/sling/loginstatus.*" }
+      /7032 { /type "deny" /method "GET" /url "/system/sling/loginstatus.js" }
+    }
+  /cache
+    {
+    /docroot "${DOCROOT}"
+    /statfileslevel "4"
+    /allowAuthorized  "0"
+    /serveStaleOnError "1"
+    /rules
+      {
+        /0000
+          {
+            /glob "*"
+            /type "allow"
+          }
+        /0001
+          {
+            /glob "/libs/granite/security/currentuser.json*"
+            /type "deny"
+          }
+        /0002
+          {
+            /glob "/libs/granite/dispatcher/content/vanityUrls.html"
+            /type "deny"
+          }
+        /0005
+          {
+            /glob "/libs/granite/csrf/token.json*"
+            /type "deny"
+          }
+        /0006
+          {
+            /glob "/libs/granite/security/userinfo.json*"
+            /type "deny"
+          }
+        /007
+          {
+            /glob "/content/staffweb/*"
+            /type "deny"
+          }
+        /disable-nocache
+          {
+            /glob "*.nocache.html*"
+            /type "deny"
+          }
+      }
+    /invalidate
+      {
+        /0000
+          {
+            /glob "*"
+            /type "deny"
+          }
+        /0001
+          {
+            /glob "*.html"
+            /type "allow"
+          }
+        /0002
+          {
+            /glob "/etc/segmentation.segment.js"
+            /type "allow"
+          }
+        /0003
+          {
+            /glob "*/analytics.sitecatalyst.js"
+            /type "allow"
+          }
+      }
+    /allowedClients
+      {
+        $include "../cache/default_invalidate.any"
+      }
+    /ignoreUrlParams
+      {
+        /0001
+          {
+            /glob "*"
+            /type "deny"
+          }
+        /0002
+          {
+            /glob "ticket="
+            /type "deny"
+          }
+      }
+    /headers
+      {
+      "Content-Disposition"
+      "Content-Type"
+      "Content-Length"
+      }
+    #Configuring Time Based Cache Invalidation
+    /enableTTL "1"
+    }
+  /statistics
+    {
+      /categories
+        {
+        /html
+          {
+            /glob "*.html"
+          }
+        /others
+          {
+            /glob "*"
+          }
+        }
+    }
+  /sessionmanagement
+    {
+      /directory "/etc/httpd/dispatcher/sessions"
+      /encode "md5"
+      /header "Cookie:staffweb-session"
+      /timeout "800"
+    }
+
+  /auth_checker
+  {
+  /url "/bin/permissioncheck"
+  /filter
+    {
+    /0000
+      {
+        /glob "*"
+        /type "deny"
+      }
+    /0001
+      {
+        /glob "/content/staffweb/*.html"
+        /type "allow"
+      }
+    /0002
+      {
+        /glob "/staffweb/*"
+        /type "allow"
+      }
+    }
+  /headers
+    {
+    /0000
+      {
+        /glob "*"
+        /type "deny"
+      }
+    /0001
+      {
+        /glob "Set-Cookie:*"
+        /type "allow"
+      }
+    }
+}
